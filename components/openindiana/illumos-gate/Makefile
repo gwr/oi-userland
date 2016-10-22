@@ -19,8 +19,8 @@ COMPONENT_NAME=		illumos-gate
 COMPONENT_SRC=		$(COMPONENT_NAME)
 
 GIT=git
-GIT_REPO=git://github.com/illumos/illumos-gate.git
-GIT_BRANCH=master
+GIT_REPO=git://github.com/alarcher/illumos-gate.git
+GIT_BRANCH=gfx3b
 GIT_CHANGESET=HEAD
 
 FETCH=$(WS_TOOLS)/userland-fetch
@@ -32,6 +32,8 @@ NIGHTLY_OPTIONS=-nCDmprt
 else
 NIGHTLY_OPTIONS=-nCmprt
 endif
+
+RELEASE_MINOR=3
 ONNV_BUILDNUM=$(BRANCHID)
 
 COMPONENT_REVISION=$(shell cd $(COMPONENT_SRC); git rev-list HEAD --count)
@@ -164,6 +166,7 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	echo "<transform depend fmri=pkg:/consolidation/man/man-incorporation@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/CPQary3@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/benchmark/filebench@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	echo "<transform depend fmri=pkg:/driver/graphics/agpgart@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/driver/graphics/drm@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/driver/network/arbel@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/driver/network/bnx@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
@@ -538,6 +541,7 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	echo "<transform depend fmri=pkg:/SUNWzyd@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/dtrace@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/file-system/ntfsprogs@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	echo "<transform depend fmri=pkg:/system/header/header-agp@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/library/security/crypto/pkcs11_kms@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/library/storage/scsi-plugin@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/management/snmp/sea@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
