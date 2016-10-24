@@ -19,8 +19,8 @@ COMPONENT_NAME=		illumos-gate
 COMPONENT_SRC=		$(COMPONENT_NAME)
 
 GIT=git
-GIT_REPO=git://github.com/alarcher/illumos-gate.git
-GIT_BRANCH=gfx3b
+GIT_REPO=git://github.com/gwr/illumos-gate.git
+GIT_BRANCH=drm8
 GIT_CHANGESET=HEAD
 
 FETCH=$(WS_TOOLS)/userland-fetch
