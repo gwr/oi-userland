@@ -19,19 +19,19 @@ COMPONENT_NAME=		gfx-drm
 COMPONENT_SRC=		$(COMPONENT_NAME)
 
 GIT=git
-GIT_REPO=https://github.com/alarcher/gfx-drm
+#GIT_REPO=git://github.com/gwr/gfx-drm.git
+GIT_REPO=git://github.com/alarcher/gfx-drm.git
 GIT_BRANCH=drm3
 GIT_CHANGESET=HEAD
 
+FETCH=$(WS_TOOLS)/userland-fetch
+
 RELEASE_MINOR=3
 ONNV_BUILDNUM=$(BRANCHID)
+
 COMPONENT_REVISION=$(shell cd $(COMPONENT_SRC); git rev-list HEAD --count)
 
-GFX_DRM_REPO=$(SOURCE_DIR)/packages/$(MACH)/nightly-nd/repo.gfx-drm
-
-# The code is not lint clean: do not pass -l
-# Do not check proto area as we do not install drm headers -N
-NIGHTLY_OPTIONS=-nmprtN
+GFX_DRM_REPO=$(SOURCE_DIR)/packages/$(MACH)/nightly-nd/repo.skel
 
 CLEAN_PATHS += $(BUILD_DIR)
 CLOBBER_PATHS += $(SOURCE_DIR)
@@ -53,36 +53,22 @@ download:: $(SOURCE_DIR)/.downloaded
 
 PATCH_DIR?= patches
 PATCH_PATTERN?= *.patch
-PATCHES= $(shell find $(PATCH_DIR) $(PARFAIT_PATCH_DIR) -type f \
-											-name '$(PATCH_PATTERN)' \
-                      	2>/dev/null | sort) $(EXTRA_PATCHES)
+PATCHES= # please don't patch -- update gfx-drm instead
 
 $(SOURCE_DIR)/.patched:	$(SOURCE_DIR)/.downloaded $(PATCHES)
 	$(MKDIR) $(@D)
 	cd $(SOURCE_DIR) && \
         $(GIT) checkout -f && \
               $(GIT) clean -f
-	for p in $(PATCHES); do \
-          $(GPATCH) -d $(@D) $(GPATCH_FLAGS) < $$p; \
-        done
-	@cd $(SOURCE_DIR); $(GIT) log -1 --format=%H > .downloaded
 	$(TOUCH) $@
 
 prep::	$(SOURCE_DIR)/.patched
 
-$(BUILD_DIR)/$(MACH)/.built: $(SOURCE_DIR)/.patched
+$(BUILD_DIR)/$(MACH)/.built: $(SOURCE_DIR)/.patched env.sh
 	cd $(SOURCE_DIR) && \
-		cat myenv.sh | \
-		(sed \
-			-e 's|^export NIGHTLY_OPTIONS=.*|export NIGHTLY_OPTIONS=\"$(NIGHTLY_OPTIONS)\"|' \
-			-e 's|^export VERSION=.*|export VERSION=\"$$(git log -1 --format=illumos-%h)\"|' \
-			-e 's|^export CODEMGR_WS=.*|export CODEMGR_WS=\"$$PWD\"|' \
-			-e 's|^export ON_CLOSED_BINS=.*|export ON_CLOSED_BINS=\"/opt/onbld/closed\"|'; \
-		echo export PYTHON_VERSION=\"$(PYTHON_VERSION)\"; \
-		echo export ONNV_BUILDNUM=$(ONNV_BUILDNUM); \
-		echo export PKGVERS_BRANCH=$(ONNV_BUILDNUM); \
-		) > env.sh && \
-	time $(ENV) -i /opt/onbld/bin/nightly env.sh
+		/opt/onbld/bin/bldenv ../env.sh "cd usr/src; make install"
+	cd $(SOURCE_DIR) && \
+		/opt/onbld/bin/bldenv ../env.sh "cd usr/src/pkg; make install"
 	@[ -d $(BUILD_DIR)/$(MACH) ] || $(MKDIR) $(BUILD_DIR)/$(MACH)
 	$(TOUCH) $@
 
@@ -90,6 +76,8 @@ PROTO_DIR=$(SOURCE_DIR)/proto/root_i386/
 
 build install: $(BUILD_DIR)/$(MACH)/.built
 
+# Could we just provide a transforms directory here instead?
+# BTW, what ../illumos-gate does here is gross.
 $(BUILD_DIR)/$(MACH)/publish.transforms:
 	echo "<transform set name=pkg.fmri -> edit value pkg://[^/]+/ pkg://$(PUBLISHER)/>" > \
 	$(BUILD_DIR)/$(MACH)/publish.transforms
