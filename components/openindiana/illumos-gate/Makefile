@@ -166,6 +166,7 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	echo "<transform depend fmri=pkg:/consolidation/man/man-incorporation@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/CPQary3@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/benchmark/filebench@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	echo "<transform depend fmri=pkg:/driver/graphics/agpgart@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/driver/graphics/drm@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/driver/network/arbel@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/driver/network/bnx@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
@@ -540,6 +541,7 @@ $(BUILD_DIR)/$(MACH)/publish.transforms: $(BUILD_DIR)/$(MACH)/.overlay
 	echo "<transform depend fmri=pkg:/SUNWzyd@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/dtrace@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/file-system/ntfsprogs@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
+	echo "<transform depend fmri=pkg:/system/header/header-agp@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/library/security/crypto/pkcs11_kms@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/library/storage/scsi-plugin@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
 	echo "<transform depend fmri=pkg:/system/management/snmp/sea@.* -> drop>" >> $(BUILD_DIR)/$(MACH)/publish.transforms
