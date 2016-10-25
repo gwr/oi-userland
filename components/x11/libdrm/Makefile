@@ -15,18 +15,26 @@
 include ../../../make-rules/shared-macros.mk
 
 COMPONENT_NAME=         libdrm
-COMPONENT_VERSION=      2.4.70
+COMPONENT_VERSION=      2.4.67
 COMPONENT_PROJECT_URL=  http://dri.freedesktop.org
 COMPONENT_SUMMARY=      Userspace interface to kernel Direct Rendering Module services
 COMPONENT_SRC=          $(COMPONENT_NAME)-$(COMPONENT_VERSION)
 COMPONENT_ARCHIVE=      $(COMPONENT_SRC).tar.bz2
 COMPONENT_ARCHIVE_HASH= \
-    sha256:b17d4b39ed97ca0e4cffa0db06ff609e617bac94646ec38e8e0579d530540e7b
+    sha256:ee5b71e1113be37544d0752681c12f040c01f782e2933df7d7bc21fd0d10cebe
 COMPONENT_ARCHIVE_URL=  http://dri.freedesktop.org/libdrm/$(COMPONENT_ARCHIVE) 
 COMPONENT_FMRI= x11/library/libdrm
 COMPONENT_CLASSIFICATION = System/X11
 COMPONENT_LICENSE = MIT
 COMPONENT_LICENSE_FILE = libdrm.license
+
+# Make sure we get these DRM kernel headers from the kernel
+#   drm.h drm_fourcc.h drm_mode.h drm_sarea.h i915_drm.h
+# XXX Need a dependency to make sure gfx-drm builds first...
+DRM_PROTO=$(WS_TOP)/components/openindiana/gfx-drm/gfx-drm/proto/root_i386
+COMPONENT_PRE_CONFIGURE_ACTION = \
+	(cd $(DRM_PROTO)/usr/include && tar cf - drm) |\
+	(cd $(COMPONENT_SRC)/include && tar xvf -)
 
 include $(WS_TOP)/make-rules/prep.mk
 include $(WS_TOP)/make-rules/configure.mk
@@ -65,3 +73,4 @@ test:           $(TEST_32_and_64)
 
 REQUIRED_PACKAGES += diagnostic/scanpci
 REQUIRED_PACKAGES += system/library
+REQUIRED_PACKAGES += system/header/header-drm
