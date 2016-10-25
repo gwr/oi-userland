@@ -19,9 +19,9 @@ COMPONENT_NAME=		gfx-drm
 COMPONENT_SRC=		$(COMPONENT_NAME)
 
 GIT=git
-#GIT_REPO=git://github.com/gwr/gfx-drm.git
-GIT_REPO=git://github.com/alarcher/gfx-drm.git
-GIT_BRANCH=drm3
+#GIT_REPO=git://github.com/alarcher/gfx-drm.git
+GIT_REPO=git://github.com/gwr/gfx-drm.git
+GIT_BRANCH=drm4
 GIT_CHANGESET=HEAD
 
 FETCH=$(WS_TOOLS)/userland-fetch
