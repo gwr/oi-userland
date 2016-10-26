@@ -10,6 +10,7 @@
 
 #
 # Copyright (c) 2015 Ken Mays. All Rights Reserved.
+# Copyright 2016 Gordon Ross
 #
 
 include ../../../make-rules/shared-macros.mk

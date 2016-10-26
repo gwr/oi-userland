@@ -11,6 +11,7 @@
 #
 # Copyright 2016 Alexander Pyhalov
 # Copyright 2016 Aurelien Larcher
+# Copyright 2016 Gordon Ross
 #
 
 include ../../../make-rules/shared-macros.mk
@@ -21,7 +22,7 @@ COMPONENT_SRC=		$(COMPONENT_NAME)
 GIT=git
 #GIT_REPO=git://github.com/alarcher/gfx-drm.git
 GIT_REPO=git://github.com/gwr/gfx-drm.git
-GIT_BRANCH=drm4
+GIT_BRANCH=drm5
 GIT_CHANGESET=HEAD
 
 FETCH=$(WS_TOOLS)/userland-fetch
