@@ -524,10 +524,11 @@ CXX.gcc.32 =	$(GCC_ROOT)/bin/g++
 F77.gcc.32 =	$(GCC_ROOT)/bin/gfortran
 FC.gcc.32 =	$(GCC_ROOT)/bin/gfortran
 
-CC.gcc.64 =	$(GCC_ROOT)/bin/gcc
-CXX.gcc.64 =	$(GCC_ROOT)/bin/g++
-F77.gcc.64 =	$(GCC_ROOT)/bin/gfortran
-FC.gcc.64 =	$(GCC_ROOT)/bin/gfortran
+# autoconf gets things wrong if you put -m64 only in CFLAGS
+CC.gcc.64 =	$(GCC_ROOT)/bin/gcc -m64
+CXX.gcc.64 =	$(GCC_ROOT)/bin/g++ -m64
+F77.gcc.64 =	$(GCC_ROOT)/bin/gfortran -m64
+FC.gcc.64 =	$(GCC_ROOT)/bin/gfortran -m64
 
 ifneq ($(strip $(CCACHE)),)
 
@@ -841,9 +842,6 @@ CPP_XPG5MODE=   -D_XOPEN_SOURCE=500 -D__EXTENSIONS__=1 -D_XPG5
 # component build with CONFIGURE_OPTIONS += CFLAGS="$(CFLAGS)" or similiar.
 #
 
-# Generate 32/64 bit objects
-CC_BITS =	-m$(BITS)
-
 # Code generation instruction set and optimization 'hints'.  Use studio_XBITS
 # and not the .arch.bits variety directly.
 studio_XBITS.sparc.32 =	-xtarget=ultra2 -xarch=sparcvis -xchip=ultra2
@@ -980,10 +978,6 @@ CC_PIC =	$($(COMPILER)_PIC)
 CFLAGS.gcc +=	$(gcc_OPT)
 CFLAGS.gcc +=	$(gcc_XREGS)
 
-
-# Build 32 or 64 bit objects.
-CFLAGS +=	$(CC_BITS)
-
 # Add compiler specific 'default' features
 CFLAGS +=	$(CFLAGS.$(COMPILER))
 
@@ -1013,14 +1007,6 @@ studio_COMPAT_VERSION_4 =	-compat=4
 # Tell the compiler that we don't want the studio runpath added to the
 # linker flags.  We never want the Studio location added to the RUNPATH.
 CXXFLAGS +=	$($(COMPILER)_NORUNPATH)
-
-# Build 32 or 64 bit objects in C++ as well.
-CXXFLAGS +=	$(CC_BITS)
-
-# Build 32 or 64 bit objects in FORTRAN as well.
-F77FLAGS +=	$(CC_BITS)
-FCFLAGS +=	$(CC_BITS)
-
 
 #
 # Solaris linker flag sets to ease feature selection.  Add the required

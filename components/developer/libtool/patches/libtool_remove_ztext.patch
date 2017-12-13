@@ -1,0 +1,24 @@
+From ... Tue Nov 28 22:07:00 2017
+From: Gordon Ross <gordon.w.ross@gmail.com>
+Date: Tue, 28 Nov 2017 22:07:00 -0500
+Subject: libtool: Don't force -z text on shared libraries
+
+Not all shared libraries can link with -z text (which requires
+that there be no relocations remaining against RO text sections).
+Leave this to the s/w-specific build to decide.
+
+diff -u ...
+--- libtool-2.4.2/libltdl/m4/libtool.m4.~2~	Tue Nov 28 22:48:51 2017
++++ libtool-2.4.2/libltdl/m4/libtool.m4	Tue Nov 28 23:00:53 2017
+@@ -5434,9 +5434,9 @@
+       _LT_TAGVAR(no_undefined_flag, $1)=' -z defs'
+       if test "$GCC" = yes; then
+ 	wlarc='${wl}'
+-	_LT_TAGVAR(archive_cmds, $1)='$CC -shared $pic_flag ${wl}-z ${wl}text ${wl}-h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
++	_LT_TAGVAR(archive_cmds, $1)='$CC -shared $pic_flag ${wl}-h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags'
+ 	_LT_TAGVAR(archive_expsym_cmds, $1)='echo "{ global:" > $lib.exp~cat $export_symbols | $SED -e "s/\(.*\)/\1;/" >> $lib.exp~echo "local: *; };" >> $lib.exp~
+-	  $CC -shared $pic_flag ${wl}-z ${wl}text ${wl}-M ${wl}$lib.exp ${wl}-h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags~$RM $lib.exp'
++	  $CC -shared $pic_flag ${wl}-M ${wl}$lib.exp ${wl}-h ${wl}$soname -o $lib $libobjs $deplibs $compiler_flags~$RM $lib.exp'
+       else
+ 	case `$CC -V 2>&1` in
+ 	*"Compilers 5.0"*)
