@@ -54,11 +54,11 @@ CONFIGURE_OPTIONS+= --without-gtk2
 CONFIGURE_OPTIONS+= --without-gtkmm
 CONFIGURE_OPTIONS+= --disable-tests
 
-build:		$(BUILD_32)
+build:		$(BUILD_32_and_64)
 
-install:	$(INSTALL_32)
+install:	$(INSTALL_32_and_64)
 
-test:		$(TEST_32)
+test:		$(TEST_32_and_64)
 
 REQUIRED_PACKAGES += library/glib2
 REQUIRED_PACKAGES += library/libfuse
