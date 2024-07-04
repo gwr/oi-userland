@@ -1,0 +1,63 @@
+After attaching to a process that was stopped with SIGSTOP,
+we may need to clear the SIGSTOP, and we may need SIGCONT.
+
+diff -wpruN '--exclude=*.orig' a~/gdb/procfs.c a/gdb/procfs.c
+--- a~/gdb/procfs.c.~1~	Sun Mar  3 00:55:00 2024
++++ a/gdb/procfs.c	Wed Jul  3 22:43:26 2024
+@@ -233,6 +233,7 @@
+   /* process state */
+   int was_stopped;
+   int ignore_next_sigstop;
++  int need_sigcont;
+ 
+   int ctl_fd;			/* File descriptor for /proc control file */
+   int status_fd;		/* File descriptor for /proc status file */
+@@ -1821,6 +1822,19 @@
+     {
+       pi->was_stopped = 1;
+       proc_prettyprint_why (proc_why (pi), proc_what (pi), 1);
++      /*
++       * If we don't arrange for a SIGCONT after attaching to a process
++       * that was stopped with SIGSTOP, the SIGSTOP remains pending and
++       * we'll keep getting that signal reported.  One could also do a
++       * "kill -CONT $pid" externally here after we've attached, but
++       * that's less convenient, and doesn't work well when attached to
++       * a multi-threaded program.
++       */
++      if (pi->prstatus.pr_lwp.pr_what == SIGSTOP &&
++	  query (_("Process was stopped. SIGCONT on continue? "))) {
++	pi->ignore_next_sigstop = 1;
++	pi->need_sigcont = 1;
++      }
+     }
+   else
+     {
+@@ -1863,7 +1877,7 @@
+ 
+   /* Add it to gdb's thread list.  */
+   ptid = ptid_t (pi->pid, lwpid, 0);
+-  thread_info *thr = add_thread (&the_procfs_target, ptid);
++  thread_info *thr = add_thread (inf->process_target(), ptid);
+   switch_to_thread (thr);
+ }
+ 
+@@ -2451,10 +2465,16 @@
+   errno = 0;
+ 
+   /* Convert signal to host numbering.  */
+-  if (signo == 0 || (signo == GDB_SIGNAL_STOP && pi->ignore_next_sigstop))
+-    native_signo = 0;
+-  else
++  if (signo == 0 || (signo == GDB_SIGNAL_STOP && pi->ignore_next_sigstop)) {
++    if (pi->need_sigcont) {
++      pi->need_sigcont = 0;
++      native_signo = SIGCONT;
++    } else {
++      native_signo = 0;
++    }
++  } else {
+     native_signo = gdb_signal_to_host (signo);
++  }
+ 
+   pi->ignore_next_sigstop = 0;
+ 

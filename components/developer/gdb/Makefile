@@ -90,7 +90,12 @@ CFLAGS_EXTRA = -Wall -Wno-long-long -Wcast-align -fno-omit-frame-pointer
 
 CFLAGS = $(CC_BITS) $(CFLAGS_EXTRA) $(CFLAGS_$(MACH))
 CXXFLAGS = $(CC_BITS) $(CFLAGS_EXTRA) $(CFLAGS_$(MACH))
+
 CPPFLAGS = -D_REENTRANT -I$(USRINCDIR)/ncurses
+# Need this to avoid iconv_open autoconfig failures
+CPPFLAGS += -D_XOPEN_SOURCE=600
+# Need this to avoid PHONY_ICONV mess which errors in C++ code.
+CPPFLAGS += -D__STDC_ISO_10646__
 
 LDFLAGS += -L/usr/gnu/lib/$(MACH64) -R/usr/gnu/lib/$(MACH64)
 
